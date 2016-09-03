@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:divider="@drawable/divider"
+    android:showDividers="middle"
+    tools:context=".StoryListActivity">
+
+    <!-- 스토리, 추가 버튼-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/storylist_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="스토리(3)"
+            android:textSize="25sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/storylist_button_delete_story"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_delete"/>
+
+        <!--<Button-->
+            <!--android:id="@+id/storylist_button_add_story"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:text="+추가" />-->
+
+        <ImageView
+            android:id="@+id/storylist_button_add_story"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:adjustViewBounds="true"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_add" />
+
+    </LinearLayout>
+
+    <!-- 검색창 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/storylist_search"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="검색어를 입력해 주세요"
+            android:singleLine="true"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@android:drawable/ic_search_category_default"/>
+
+        <ImageView
+            android:id="@+id/storylist_init_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="10dp"
+            android:src="@android:drawable/ic_input_delete"/>
+
+    </FrameLayout>
+
+    <!-- 스토리 리스트 -->
+    <ListView
+        android:id="@+id/storylist_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none"
+        android:dividerHeight="0dp"
+        android:divider="@null"/>
+
+    <!-- 삭제 활성화 됐을 때 나오는 뷰 -->
+    <LinearLayout
+        android:id="@+id/storylist_delete_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/storylist_delete_cancel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="취소"/>
+
+        <Button
+            android:id="@+id/storylist_delete_ok"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="삭제"/>
+
+    </LinearLayout>
+
+</LinearLayout>

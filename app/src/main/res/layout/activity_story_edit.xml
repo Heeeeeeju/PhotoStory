@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:divider="@drawable/divider"
+    android:showDividers="middle"
+    tools:context=".StoryEditActivity">
+
+    <!-- 스토리생성, 완료-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="스토리 생성"
+            android:textSize="25sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/storyedit_finish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="완료"
+            android:textSize="25sp"/>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:divider="@drawable/divider"
+            android:showDividers="middle">
+
+            <!-- 제목, 메모 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/storyedit_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:hint="제목을 입력해주세요"
+                    android:textSize="22sp"
+                    android:singleLine="true"
+                    android:background="@android:color/transparent"/>
+
+                <EditText
+                    android:id="@+id/storyedit_memo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:hint="메모를 입력해주세요"
+                    android:textSize="17sp"
+                    android:background="@android:color/transparent"/>
+
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/storyedit_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!--<com.facebook.drawee.view.DraweeView-->
+        <!--android:layout_width="200dp"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:src="@drawable/select_character_1"-->
+        <!--fresco:fadeDuration="300"-->
+        <!--fresco:actualImageScaleType="focusCrop"-->
+        <!--fresco:placeholderImageScaleType="fitCenter"-->
+        <!--fresco:failureImageScaleType="centerInside"-->
+        <!--fresco:retryImageScaleType="centerCrop"-->
+        <!--fresco:progressBarImageScaleType="centerInside"-->
+        <!--fresco:progressBarAutoRotateInterval="1000" />-->
+
+</LinearLayout>
