@@ -80,7 +80,7 @@ public class DBAdapter {
         dbHelper.close();
     }
 
-    // 넣기
+    // 새로운 아이템 삽입
     public long insert(StoryData data) {
         ContentValues insertValues = new ContentValues();
         insertValues.put("PhotoPaths", data.paths);
@@ -92,7 +92,7 @@ public class DBAdapter {
         return db.insert(DATABASE_TABLE, null, insertValues);
     }
 
-    // 업데이트
+    // 아이템 업데이트
     public long update(StoryData data, String time) {
         ContentValues updateValues = new ContentValues();
         updateValues.put("PhotoPaths", data.paths);
@@ -110,7 +110,6 @@ public class DBAdapter {
         String[] whereArgs = new String[] { time };
         int deletedNum = db.delete(DATABASE_TABLE, whereClause, whereArgs);
         return deletedNum > 0;
-//        return db.delete(DATABASE_TABLE, "Time = ", time, null) > 0;
     }
 
     // 전부 삭제

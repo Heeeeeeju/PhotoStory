@@ -33,17 +33,17 @@ import java.util.Random;
 
 public class StoryEditActivity extends AppCompatActivity {
 
-    String[] photoPaths;
+    String[] photoPaths;    // 이전 액티비티에서 받아온 사진들 경로를 저장하는 변수
     ListView listView;
     ListViewAdapter adapter;
 
-    EditText title;
-    EditText memo;
-    TextView buttonFinish;
+    EditText title; // 스토리 제목
+    EditText memo;  // 스토리 메모
+    TextView buttonFinish;  // 완료 버튼
 
     int screenWidth;
 
-    boolean isClickFinish = false;
+    boolean isClickFinish = false;  // 완료 버튼을 누르면 다른 동작들 무시하게 하기 위한 변수
 
     public static Activity activity;
 
@@ -52,29 +52,36 @@ public class StoryEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_edit);
 
+        // 인스턴스 초기화
         activity = this;
 
+        // 핸드폰 화면의 너비 구하기
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         screenWidth = metrics.widthPixels;
 
+        // 리스트뷰 초기화 및 어뎁터 등록
         adapter = new ListViewAdapter(getApplicationContext());
         listView = (ListView) findViewById(R.id.storyedit_list);
         listView.setAdapter(adapter);
-        photoPaths = getIntent().getStringExtra("paths").split(",");
 
+        // 받아온 사진 경로를 이용해 리스트뷰에 사진 등록
+        photoPaths = getIntent().getStringExtra("paths").split(",");
         for (int i = 0; i< photoPaths.length; i++) {
             Log.d("StoryEdit", photoPaths[i]);
             adapter.addItem(photoPaths[i]);
         }
         setListViewHeightBasedOnChildren(listView);
 
+        // 받아온 제목 값을 넣어줌
         title = (EditText) findViewById(R.id.storyedit_title);
         title.setText(getIntent().getStringExtra("title"));
 
+        // 받아온 메모 값을 넣어줌
         memo = (EditText) findViewById(R.id.storyedit_memo);
         memo.setText(getIntent().getStringExtra("memo"));
 
+        // 편집 완료 버튼 클릭 리스너 등록
         buttonFinish = (TextView) findViewById(R.id.storyedit_finish);
         buttonFinish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,24 +100,24 @@ public class StoryEditActivity extends AppCompatActivity {
                 data.paths = bindingPath;
                 data.title = title.getText().toString();
                 data.memo = memo.getText().toString();
+                data.time = Long.toString(System.currentTimeMillis());
                 // 이미 작성한 글을 수정하는 경우엔 DB Update 해주고
                 boolean isBeforeDetail = getIntent().getBooleanExtra("isBeforeDetail", false);
                 if (isBeforeDetail) {
-                    data.time = Long.toString(System.currentTimeMillis());
                     dbAdapter.update(data, getIntent().getStringExtra("time"));
                 // 처음 작성하는 글이면 DB Insert 해줌
                 } else {
-                    //data.time = Long.toString(System.currentTimeMillis());
-                    // TODO : 나중에 지워야 됨
-                    // 테스트를 위해 임시로 시간 0~5달 랜덤으로 뺌
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(System.currentTimeMillis());
-                    calendar.add(Calendar.MONTH, -(new Random()).nextInt(6));
-                    data.time = Long.toString(calendar.getTimeInMillis());
+//                     TODO : 나중에 지워야 됨
+//                     테스트를 위해 임시로 시간 0~5달 랜덤으로 뺌
+//                    Calendar calendar = Calendar.getInstance();
+//                    calendar.setTimeInMillis(System.currentTimeMillis());
+//                    calendar.add(Calendar.MONTH, -(new Random()).nextInt(6));
+//                    data.time = Long.toString(calendar.getTimeInMillis());
                     dbAdapter.insert(data);
                 }
                 dbAdapter.close();
 
+                // 이전 액티비티로 이동
                 Intent intent;
                 if (isBeforeDetail) {
                     intent = new Intent(StoryEditActivity.this, StoryDetailActivity.class);
@@ -196,6 +203,7 @@ public class StoryEditActivity extends AppCompatActivity {
             return convertView;
         }
 
+        // 리스트뷰 아이템 추가 함수
         public void addItem(String path) {
             StoryEditData addInfo = new StoryEditData();
 
@@ -204,6 +212,7 @@ public class StoryEditActivity extends AppCompatActivity {
             listData.add(addInfo);
         }
 
+        // 리스트뷰 아이템 삭제 함수
         public void removeItem(int position) {
             listData.remove(position);
             adapter.notifyDataSetChanged();
@@ -211,6 +220,7 @@ public class StoryEditActivity extends AppCompatActivity {
         }
     }
 
+    // 리스트뷰의 높이 구하는 함수
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListViewAdapter listAdapter = (ListViewAdapter) listView.getAdapter();
         if (listAdapter == null) {
@@ -230,6 +240,5 @@ public class StoryEditActivity extends AppCompatActivity {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
         listView.requestLayout();
-
     }
 }

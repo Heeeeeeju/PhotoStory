@@ -16,11 +16,11 @@ import java.util.ArrayList;
 
 public class PhotoExpandActivity extends AppCompatActivity {
 
-    int size = 0;
-    int position = 0;
+    int size = 0;   // 사진 총 개수
+    int position = 0;   // 상세뷰에서 누른 사진의 번호
     ArrayList<String> pathList;
 
-//    LinearLayout gallery;
+    // 슬라이드 화면을 위한 뷰페이져
     ViewPager gallery;
 
     @Override
@@ -32,6 +32,7 @@ public class PhotoExpandActivity extends AppCompatActivity {
         position = getIntent().getIntExtra("position", 0);
         pathList = getIntent().getStringArrayListExtra("pathList");
 
+        // 뷰페이져 초기화 및 어뎁터 등록
         gallery = (ViewPager) findViewById(R.id.photoexpand_gallery);
         gallery.setAdapter(new GalleryPagerAdapter());
         gallery.setCurrentItem(position);
@@ -59,7 +60,7 @@ public class PhotoExpandActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-//            return super.instantiateItem(container, position);
+            // 이미지 출력
             ImageView image = new ImageView(getApplicationContext());
             image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             Picasso.with(getApplicationContext()).load(new File(pathList.get(position))).fit().into(image);

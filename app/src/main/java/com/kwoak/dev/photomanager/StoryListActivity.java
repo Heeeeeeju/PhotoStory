@@ -38,14 +38,14 @@ public class StoryListActivity extends AppCompatActivity {
     ListView listView;
     ListViewAdapter adapter;
 
-    TextView activityTitle;
-    ImageView buttonDeleteStory;
-    ImageView buttonAddStory;
-    EditText searchView;
-    ImageView buttonInitSearch;
-    LinearLayout deleteView;
-    Button buttonDeleteCancel;
-    Button buttonDeleteOk;
+    TextView activityTitle; // 최상단 스토리(%개수%)
+    ImageView buttonDeleteStory;    // 스토리 삭제 (비)활성화 버튼
+    ImageView buttonAddStory;   // 스토리 추가 버튼
+    EditText searchView;    // 스토리 검색 뷰
+    ImageView buttonInitSearch; // 검색 뷰 초기화 버튼
+    LinearLayout deleteView;    // 삭제 활성화 됐을 시 최하단에 나타나는 취소, 확인 버튼을 담은 뷰
+    Button buttonDeleteCancel;  // 위의 뷰에 담긴 취소 버튼
+    Button buttonDeleteOk;      // 위의 뷰에 담긴 확인 버튼
 
     int[] storySize;    // 각 섹션별로 몇 개의 스토리가 저장되어있는지를 나타내는 변수
     boolean isDeleteMode = false;   // 스토리 삭제 활성화 여부
@@ -57,8 +57,10 @@ public class StoryListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // 삭제가 활성화였을 경우엔 비활성화 시키고
         if (isDeleteMode) {
             buttonDeleteCancel.callOnClick();
+        // 비활성화였을 경우엔 앱 종료
         } else {
             super.onBackPressed();
         }
@@ -117,7 +119,7 @@ public class StoryListActivity extends AppCompatActivity {
         // 삭제 활성화 됐을 때 나타나는 뷰들
         deleteView = (LinearLayout) findViewById(R.id.storylist_delete_view);
 
-        // 삭제 취소
+        // 삭제 취소 버튼 클릭 리스너 등록
         buttonDeleteCancel = (Button) findViewById(R.id.storylist_delete_cancel);
         buttonDeleteCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,31 +127,30 @@ public class StoryListActivity extends AppCompatActivity {
                 isDeleteMode = false;
                 deleteView.setVisibility(View.GONE);
                 adapter.notifyDataSetChanged();
-                // TODO : 리스트뷰 삭제 비활성화 & 체크 해제해야 됨
             }
         });
 
-        // 삭제 확인
+        // 삭제 확인 버튼 클릭 리스너 등록
         buttonDeleteOk = (Button) findViewById(R.id.storylist_delete_ok);
         buttonDeleteOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO : 리스트뷰 삭제 비활성화 & 선택한 아이템들 삭제
                 isDeleteMode = false;
                 deleteView.setVisibility(View.GONE);
                 int dataSize = adapter.listData.size();
                 for (int i=0; i<dataSize; i++) {
+                    // 섹션 헤더일 경우 넘어감
                     if (adapter.sectionHeader.contains(i)) { continue; }
 
+                    // 체크 되어있는 스토리들 삭제
                     StoryListData data = adapter.listData.get(i);
-//                    if (((ViewHolder) adapter.getItem(i)).deleteBox.isChecked()) {
                     View row = getViewByPosition(i, listView);
                     CheckBox deleteBox = (CheckBox) row.findViewById(R.id.item_storylist_delete_box);
                     if (deleteBox.isChecked()) {
-                        // TODO : 체크 되있는 것만 지우도록 수정
                         dbAdapter.deleteRow(data.time);
                     }
                 }
+                // 삭제 후 리스트뷰 데이터들 재정리
                 InitListDatas();
                 adapter.notifyDataSetChanged();
             }
@@ -173,6 +174,7 @@ public class StoryListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        // 제일 처음 리스트뷰 데이터들 정리
         InitListDatas();
 
         // 처음에 키보드 숨김
@@ -207,6 +209,7 @@ public class StoryListActivity extends AppCompatActivity {
             String memo = data.memo;
             Log.d("StoryList memo", data.memo);
 
+            // 시간 가져오기
             long timeLong = Long.parseLong(time);
             calendar.setTimeInMillis(timeLong);
             int year = calendar.get(Calendar.YEAR);
@@ -216,6 +219,7 @@ public class StoryListActivity extends AppCompatActivity {
                 baseYear = year;
                 baseMonth = month;
             }
+            // 년, 월이 다를 경우 섹션 헤더 추가
             if ((baseYear != year || baseMonth != month)) {
                 int headerIndex = adapter.listData.size() - count;
                 adapter.addSectionHeaderView(headerIndex, String.format("%d년 %d월 (%d)", baseYear, baseMonth + 1, count));
@@ -224,6 +228,7 @@ public class StoryListActivity extends AppCompatActivity {
                 count = 0;
             }
             count = count + 1;
+            // 제일 마지막에 섹션 헤더 추가
             if (index == size - 1) {
                 int headerIndex = (adapter.listData.size() + 1) - count;
                 adapter.addSectionHeaderView(headerIndex, String.format("%d년 %d월 (%d)", baseYear, baseMonth + 1, count));
@@ -274,6 +279,7 @@ public class StoryListActivity extends AppCompatActivity {
             int invisibleIndex = -1;
             int[] invisibleCount = new int[adapter.sectionHeader.size()];
             for (int i=0; i<size; i++) {
+                // 섹션 헤더일 경우 넘어감
                 if (adapter.sectionHeader.contains(i)) {
                     invisibleIndex++;
                     continue;
@@ -281,9 +287,11 @@ public class StoryListActivity extends AppCompatActivity {
                 StoryListData data = (StoryListData) adapter.getItem(i);
                 StoryListData header = ((StoryListData) adapter.getItem(adapter.sectionHeader.get(invisibleIndex)));
                 String text = searchView.getText().toString();
+                // 검색창에 아무것도 입력이 안돼있거나 입력된 것을 포함하는 경우 표시하고
                 if (data.title.contains(text) || data.memo.contains(text) || text.equals("")) {
                     data.visible = true;
                     header.visible = true;
+                // 포함하지 않으면 안보이게 설정
                 } else {
                     data.visible = false;
                     invisibleCount[invisibleIndex]++;
@@ -343,6 +351,7 @@ public class StoryListActivity extends AppCompatActivity {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
+        // 섹션 헤더를 추가하는 함수
         public void addSectionHeaderView(int index, String title) {
             StoryListData data = new StoryListData();
             data.title = title;
@@ -383,6 +392,7 @@ public class StoryListActivity extends AppCompatActivity {
             if (convertView == null) {
                 holder = new ViewHolder();
 
+                // 해당 position이 스토리일 경우
                 if (rowType == TYPE_ROW) {
                     convertView = inflater.inflate(R.layout.listview_item_storylist, parent, false);
 
@@ -391,6 +401,7 @@ public class StoryListActivity extends AppCompatActivity {
                     holder.title = (TextView) convertView.findViewById(R.id.item_storylist_title);
                     holder.date = (TextView) convertView.findViewById(R.id.item_storylist_date);
                     holder.deleteBox = (CheckBox) convertView.findViewById(R.id.item_storylist_delete_box);
+                // 해당 position이 섹션 헤더일 경우
                 } else {
                     convertView = inflater.inflate(R.layout.listview_header_storylist, parent, false);
 
@@ -403,7 +414,9 @@ public class StoryListActivity extends AppCompatActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
+            // position의 데이터 값들을 가져옴
             final StoryListData data = listData.get(position);
+            // 검색 결과에 따라 (비)가시 설정
             if (data.visible) {
                 holder.parentView.setVisibility(View.VISIBLE);
                 holder.title.setVisibility(View.VISIBLE);
@@ -444,6 +457,7 @@ public class StoryListActivity extends AppCompatActivity {
             return convertView;
         }
 
+        // 스토리 추가하는 함수
         public void addItem(String time, String title, String path, String memo) {
             StoryListData addInfo = new StoryListData();
 
@@ -456,9 +470,9 @@ public class StoryListActivity extends AppCompatActivity {
             listData.add(addInfo);
         }
 
+        // 스토리 삭제하는 함수
         public void removeItem(int position) {
             listData.remove(position);
-//            adapter.notifyDataSetChanged();
         }
     }
 }

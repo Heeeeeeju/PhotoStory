@@ -35,6 +35,7 @@ import java.util.List;
  */
 public class CameraActivity extends Activity {
 
+    // 카메라 화면을 담기 위한 변수들
     protected static final String TAG = null;
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
@@ -48,6 +49,7 @@ public class CameraActivity extends Activity {
     // 스토리에 사용될 사진 경로들
     ArrayList<String> photoPaths;
 
+    // 찍은 사진의 개수
     int numOfPhoto = 0;
 
     @Override
@@ -58,11 +60,12 @@ public class CameraActivity extends Activity {
 
         photoPaths = new ArrayList<String>();
 
+        // 카메라 화면을 담을 서피스뷰 초기화
         surfaceView =  (SurfaceView) findViewById(R.id.camera_surface);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(surfaceListener);
-        //surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
+        // 종료 버튼 클릭 리스너 등록
         buttonExit = (TextView) findViewById(R.id.camera_exit);
         buttonExit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +74,7 @@ public class CameraActivity extends Activity {
             }
         });
 
+        // 사진 촬영 버튼 클릭 리스너 등록
         buttonTakePhoto = (ImageView) findViewById(R.id.camera_take_photo);
         buttonTakePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +86,7 @@ public class CameraActivity extends Activity {
             }
         });
 
+        // 촬영 완료 버튼 클릭 리스너 등록
         buttonFinish = (TextView) findViewById(R.id.camera_finish);
         buttonFinish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,9 +98,8 @@ public class CameraActivity extends Activity {
                 buttonFinish.setClickable(false);
                 buttonFinish.setTextColor(Color.GRAY);
 
-                // 편집창으로 이동
+                // 편집뷰로 이동
                 Intent intent = new Intent(CameraActivity.this, StoryEditActivity.class);
-//                intent.putStringArrayListExtra("paths", photoPaths);
                 intent.putExtra("paths", android.text.TextUtils.join(",", photoPaths.toArray()));
                 startActivity(intent);
                 StoryListActivity.activity.finish();
@@ -104,9 +108,10 @@ public class CameraActivity extends Activity {
         });
     }
 
-
+    // 카메라 촬영 함수
     private Camera.PictureCallback takePicture = new Camera.PictureCallback() {
 
+        // 사진을 저장하기 위한 파일
         private File imageFile;
 
         @Override
@@ -170,7 +175,6 @@ public class CameraActivity extends Activity {
             }
 
             // 찍은 사진의 개수 표시
-            // TODO : 편집 화면에서 사진 개수 불러 와야함
             buttonFinish.setText(String.format("완료(%d)", ++numOfPhoto));
 
             // 카메라 다시 시작
@@ -183,29 +187,25 @@ public class CameraActivity extends Activity {
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
+            Log.i(TAG, "카메라 기능 해제");
             camera.release();
             camera = null;
-            Log.i(TAG, "카메라 기능 해제");
         }
 
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
-            camera = Camera.open();
             Log.i(TAG, "카메라 미리보기 활성");
-
+            camera = Camera.open();
             try {
                 camera.setPreviewDisplay(holder);
                 camera.setDisplayOrientation(90);
-            }catch(Exception e) {
+            } catch(Exception e) {
                 e.printStackTrace();
             }
         }
 
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) {
-//            Camera.Parameters parameters = camera.getParameters();
-//            parameters.setPreviewSize(width, height);
-//            camera.startPreview();
             Log.i(TAG,"카메라 미리보기 활성");
 
             Camera.Parameters parameters = camera.getParameters();
